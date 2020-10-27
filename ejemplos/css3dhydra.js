@@ -82,7 +82,7 @@ function init(){
 	meshFloor.receiveShadow = true;
 	scene.add(meshFloor);
 
-	ambientLight = new THREE.AmbientLight(0xffffff, 1);
+	ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
 	scene.add(ambientLight);
 
 	light = new THREE.PointLight(0xffffff, 0.8, 18);
