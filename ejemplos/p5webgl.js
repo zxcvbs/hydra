@@ -24,6 +24,8 @@ p1.mousePressed = () => {
 p1.hide()
 s0.init({src: p1.canvas})
 src( s0 )
-.modulate( noise(1) )
-//.mult(noise(3)).scale(() => Math.sin(time)*0.5)
+.mult(voronoi(0)).scale(() => Math.abs(Math.sin(time)))
+.scrollY(5,5).scrollX(1,[0,1,-1].fast(2))
+.modulate(osc(2,0.01,1)).colorama([0.1,0.2,0.5,0.6].fast()).diff(src(o0).modulate(osc(1))).kaleid([1,2,3,4,5,6].fast(0.1))
 .out(o0)
+speed = 0.1

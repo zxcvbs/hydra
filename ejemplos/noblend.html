@@ -1,0 +1,135 @@
+<html>
+<head>
+	<script src="http://threejs.org/build/three.min.js"></script>
+	<script src="js/OrbitControls.js"></script>
+	<script src="js/OBJLoader2.js"></script>
+	<script src="js/css3dObject.js"></script>
+</head>
+<body>
+	<script>
+		var scene;
+		var cssScene;
+		var camera;
+		var renderer;
+		var cameraControl;
+
+		init();
+
+		function init(){
+			scene = new THREE.Scene();
+			cssScene = new THREE.Scene();
+			createRenderer();
+			createCamera();
+			createLight();
+			//loadModel();
+			iframe();
+			document.body.appendChild(renderer.domElement);
+
+			render();
+		}
+
+		function iframe(){
+			// create the plane mesh
+			var planeGeometry = new THREE.PlaneGeometry();
+			var material = new THREE.MeshBasicMaterial({});
+			var planeMesh = new THREE.Mesh(planeGeometry,material);
+			scene.add(planeMesh);
+
+			var element = document.createElement( 'img' );
+			element.src = 'assets/lee_diffuse.jpg';
+			// create the object3d for this element
+			var cssObject = new THREE.CSS3DObject( element );
+			// we reference the same position and rotation
+			cssObject.position = planeMesh.position;
+			cssObject.rotation = planeMesh.rotation;
+
+			// add it to the css scene
+			cssScene.add(cssObject);
+
+			var cssRenderer = new THREE.CSS3DRenderer();
+			cssRenderer.setSize( window.innerWidth, window.innerHeight );
+			cssRenderer.domElement.style.position = 'absolute';
+			cssRenderer.domElement.style.top = 0;
+
+			var material   = new THREE.MeshBasicMaterial();
+			material.color.set('black')
+			material.opacity   = 0;
+			material.blending  = THREE.NoBlending;
+			// any mesh using this material will act as a see-thru to the css renderer
+
+
+
+
+		}
+
+		function createRenderer(){
+			renderer = new THREE.WebGLRenderer();
+			renderer.setClearColor(0x000000,1.0);
+			renderer.setSize(window.innerWidth,window.innerHeight);
+			renderer.shadowMap.enabled = true;
+		}
+
+		function createCamera(){
+			camera = new THREE.PerspectiveCamera(45,(window.innerWidth/window.innerHeight),0.1,1000);
+			camera.position.x = 15;
+			camera.position.y = 16;
+			camera.position.x = 23;
+			camera.lookAt(scene.position);
+
+			cameraControl  = new THREE.OrbitControls(camera);
+		}
+
+		function createLight(){
+			var spotLight = new THREE.SpotLight(0xffffff);
+			spotLight.position.set(10,40,20);
+			spotLight.shadowCameraNear = 20;
+			spotLight.shadowCameraFar = 50;
+			spotLight.castShadow = true;
+			scene.add(spotLight);
+		}
+
+		function loadModel(){
+
+			var texture = new THREE.Texture();
+			var loader = new THREE.ImageLoader();
+
+			loader.load('assets/lee_diffuse.jpg',function(image){
+				texture.image = image;
+				texture.needsUpdate = true;
+			});
+
+			var normal_texture = new THREE.Texture();
+			var loader = new THREE.ImageLoader();
+			loader.load('assets/lee_normal_tangent2.jpg',function(image){
+				normal_texture_image = image;
+				normal_texture.needsUpdate = true;
+			});
+
+			var material  = new THREE.MeshPhongMaterial({
+				map: texture,
+				wireframe: false,
+				shininess:35
+			});
+
+			var loader = new THREE.OBJLoader();
+			loader.load('assets/lee.obj',function(object){
+				object.traverse(function(child){
+					if(child instanceof THREE.Mesh){
+						child.material = material;
+						child.position.y -=10;
+					}
+				});
+				scene.add(object);
+			});
+
+
+		}
+
+		function render(){
+			cameraControl.update();
+			renderer.render(scene,camera);
+			requestAnimationFrame(render);
+		}
+	</script>
+</body>
+</html>
