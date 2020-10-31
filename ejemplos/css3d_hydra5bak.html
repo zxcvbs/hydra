@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>three.js css3d - youtube</title>
+		<title> Three.js + Hydra</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link type="text/css" rel="stylesheet" href="main.css">
@@ -30,8 +30,8 @@
 
 			import * as THREE from '../build/three.module.js';
 
-			import { TrackballControls } from './js/controls/TrackballControls.js';
-			import { CSS3DRenderer, CSS3DObject } from './js/renderers/CSS3DRenderer.js';
+			import { TrackballControls } from './jsm/controls/TrackballControls.js';
+			import { CSS3DRenderer, CSS3DObject } from './jsm/renderers/CSS3DRenderer.js';
 
 			let camera, scene, renderer;
 			let controls;
@@ -41,15 +41,15 @@
 			function Element( id, x, y, z, ry ) {
 
 				const div = document.createElement( 'div' );
-				div.style.width = '1280px';
-				div.style.height = '720px';
+				div.style.width = '480px';
+				div.style.height = '360px';
 				div.style.backgroundColor = '#000';
 				//div.style.opacity = 1;
 				const iframe = document.createElement( 'iframe' );
-				iframe.style.width = '1280px';
-				iframe.style.height = '720px';
+				iframe.style.width = '480px';
+				iframe.style.height = '360px';
 				iframe.style.border = '0px';
-				iframe.src = id;
+				iframe.src = [ 'https://www.youtube.com/embed/', id, '?rel=0' ].join( '' );
 				iframe.style.opacity = 1;
 				iframe.blending  = THREE.NoBlending;
 				div.blending = THREE.NoBlending;
@@ -120,7 +120,7 @@
 
 //youtube
 
-var frame = new Element( 'https://hydra.ojack.xyz/', 0, 0, 240, 0 ) ;
+var frame = new Element( 'SJOz3qjfQXU', 0, 0, 240, 0 ) ;
 sceneCss.add(frame);
 
 
@@ -129,7 +129,7 @@ sceneCss.add(frame);
 //planeMaterial.blending = THREE.NoBlending;
 
 //add  same previous material, to make the youtube video solid
-var planeGeometry = new THREE.PlaneGeometry(1280, 720, 10, 10);
+var planeGeometry = new THREE.PlaneGeometry(480, 360, 10, 10);
 var plane = new THREE.Mesh(planeGeometry,material);
 plane.position.copy(frame.position);
 plane.rotation.copy(frame.rotation);

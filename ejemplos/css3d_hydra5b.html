@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>three.js css3d - youtube</title>
+		<title> Three.js + Hydra</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link type="text/css" rel="stylesheet" href="main.css">
 		<style>
 		body {
-				background-color: #ffffff;
+				background-color: #0000ff;
 				margin: 0;
 				overflow: hidden;
 				#blocker {
@@ -38,18 +38,18 @@
 
 		let sceneGl, sceneCss, rendererCss, rendererGl;
 
-			function Element( id, x, y, z, ry ) {
+			function Element( id, x, y, z, ry, sizex, sizey ) {
 
 				const div = document.createElement( 'div' );
-				div.style.width = '1280px';
-				div.style.height = '720px';
+				div.style.width =  sizex + 'px';
+				div.style.height = sizey + 'px';
 				div.style.backgroundColor = '#000';
 				//div.style.opacity = 1;
 				const iframe = document.createElement( 'iframe' );
-				iframe.style.width = '1280px';
-				iframe.style.height = '720px';
+				iframe.style.width =  sizex +'px';
+				iframe.style.height =  sizey + 'px';
 				iframe.style.border = '0px';
-				iframe.src = id;
+				iframe.src = [ 'https://www.youtube.com/embed/', id, '?rel=0' ].join( '' );
 				iframe.style.opacity = 1;
 				iframe.blending  = THREE.NoBlending;
 				div.blending = THREE.NoBlending;
@@ -65,6 +65,38 @@
 
 			};
 
+
+			function generateVideo(id, xpos, ypos, zpos, rotate){
+			var sx = 1280;
+			var sy = 720;
+
+			var frame = new Element( id, xpos, ypos, zpos, rotate, sx , sy) ;
+			sceneCss.add(frame);
+
+			//var planeMaterial = new THREE.MeshBasicMaterial( {  opacity: 0.1,
+			//    transparent: true, side: THREE.DoubleSide, depthWrite: false, alphaTest: 0.5 } );
+			//planeMaterial.blending = THREE.NoBlending;
+
+			//use this  material, to make the youtube video solid, otherwise it will show the background objects
+			var material = new THREE.MeshBasicMaterial({
+					color: 0x000000,
+					opacity: 0.0,
+					side: THREE.DoubleSide
+			});
+
+
+			var planeGeometry = new THREE.PlaneGeometry(sx, sy, 10, 10);
+			var plane = new THREE.Mesh(planeGeometry,material);
+			plane.position.copy(frame.position);
+			plane.rotation.copy(frame.rotation);
+			plane.scale.copy(frame.scale);
+			sceneGl.add(plane);
+
+
+		};
+
+
+
 			init();
 			animate();
 
@@ -73,11 +105,12 @@
 				const container = document.body;
 
 				camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 50000);
-		    camera.position.set(200, 200, 200);
+		    camera.position.set(200,400, 2000);
 
 
 				sceneGl = new THREE.Scene();
 		    sceneCss = new THREE.Scene();
+				//camera.lookAt(0,0,0);
 
 				var material = new THREE.MeshBasicMaterial({
 						color: 0x000000,
@@ -120,22 +153,19 @@
 
 //youtube
 
-var frame = new Element( 'https://hydra.ojack.xyz/', 0, 0, 240, 0 ) ;
-sceneCss.add(frame);
 
 
-//var planeMaterial = new THREE.MeshBasicMaterial( {  opacity: 0.1,
-//    transparent: true, side: THREE.DoubleSide, depthWrite: false, alphaTest: 0.5 } );
-//planeMaterial.blending = THREE.NoBlending;
-
-//add  same previous material, to make the youtube video solid
-var planeGeometry = new THREE.PlaneGeometry(1280, 720, 10, 10);
-var plane = new THREE.Mesh(planeGeometry,material);
-plane.position.copy(frame.position);
-plane.rotation.copy(frame.rotation);
-plane.scale.copy(frame.scale);
-sceneGl.add(plane);
-
+var xmul = 1100;
+var zpos = [1280,0, -1280];
+var xpos = [xmul, -xmul];
+for (var i =0; i<3 ; i++)
+{
+for (var j=0; j<2; j++){
+generateVideo( 'SJOz3qjfQXU', xpos[j], 360, zpos[i], (xpos[j]<0) ?Math.PI/2: -Math.PI/2 ) ;
+}
+}
+generateVideo( 'SJOz3qjfQXU', -500, 360, -1900, 0) ;
+generateVideo( 'SJOz3qjfQXU', 500, 360, -1900, 0) ;
 
 
 
@@ -160,10 +190,10 @@ sceneGl.add(plane);
 				sceneGl.add(cube);
 
 				var floorMaterial = new THREE.MeshBasicMaterial( { color: 0xff0000, side: THREE.DoubleSide } );
-				var floorGeometry = new THREE.PlaneGeometry(100, 100, 10, 10);
+				var floorGeometry = new THREE.PlaneGeometry(2160, 3840, 10, 10);
 				var floor = new THREE.Mesh(floorGeometry, floorMaterial);
-				floor.position.copy(new THREE.Vector3(100, 75, 50));
-				floor.rotation.copy(Math.PI / 6);
+				floor.position.copy(new THREE.Vector3(0, 0, 0));
+				floor.rotation.x = Math.PI / 2;
 
 
 				sceneGl.add(floor);
